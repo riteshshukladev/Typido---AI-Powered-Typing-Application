@@ -6,8 +6,10 @@ const GamePage = () => {
   const [message, setMessage] = useState('');
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showGamePage, setShowGamePage] = useState(true); // State to control visibility of GamePage
-  const apikey = '';
+  const [showGamePage, setShowGamePage] = useState(true);
+   // State to control visibility of GamePage
+   const key = import.meta.env.VITE_API_KEY;
+  const apikey = key;
   const client = new MistralClient(apikey);
 
   useEffect(() => {
