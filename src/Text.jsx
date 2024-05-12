@@ -5,64 +5,27 @@ function TypingTest() {
   const location = useLocation();
   const { output } = location.state;
 
-  const [userInput, setUserInput] = useState('');
-  const [timer, setTimer] = useState(0);
 
-  const [isActive, setIsActive] = useState(false);
-  const timerRef = useRef(null);
-
-  useEffect(() => {
-    if (isActive) {
-      timerRef.current = setInterval(() => {
-        setTimer((prev) => prev + 1);
-        
-      }, 1000);
-    }
-
-    return () => {
-      clearInterval(timerRef.current);
-    };
-  }, [isActive]);
-
-  const stopTimer = () => {
-    clearInterval(timerRef.current);
-    setIsActive(false);
-  };
-
-  const formattedTime = useMemo(() => {
-    return new Date(timer * 1000).toISOString().substr(11, 8);
-  }, [timer]);
-
-
-  const characterSpan = useMemo(() => {
-
+  function splitStringIntoGroups(string, wordsPerGroup = 8) {
+    const words = string.split(" ");
+    const groups = [];
     
-    return output.split('').map((char, index) => {
-      let color = 'white';
-      if (index < userInput.length) {
-        console.log('char:', char);
-        
-        color = char === userInput[index] ? 'green' : 'red';
-      }
-      return <span key={index} style={{ color }}>{char}</span>;
-    });
-  }, [output, userInput]);
+    for (let i = 0; i < words.length; i += wordsPerGroup) {
+        groups.push(words.slice(i, i + wordsPerGroup).join(" "));
+    }
+    
+    return groups;
+}
 
-  return (
-    <div style={{ backgroundColor: 'black' }}>
-      <button onClick={() => setIsActive(true)}>Start</button>
-      <button onClick={stopTimer}>Stop</button>
-      <span style={{backgroundColor: 'white'}}>{formattedTime}</span>
-      <div>{characterSpan}</div>
-      
-      <input
-        type="text"
-        value={userInput}
-        onChange={(e) => setUserInput(e.target.value)}
-        disabled={!isActive}
-      />
-    </div>
-  );
+var  toBeTyped = [];
+    
+ toBeTyped= splitStringIntoGroups(output);
+
+ toBeTyped.forEach((group, index) => {
+   console.log(`Group ${index + 1}: ${group}`);
+
+ });
+
 }
 
 export default TypingTest;
