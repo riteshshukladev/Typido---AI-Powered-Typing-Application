@@ -6,6 +6,8 @@ function TypingTest() {
   const { output } = location.state;
 
   const [toBeTyped, setToBeTyped] = useState([]);
+  const [typed, setTyped] = useState([]);
+  const [currentTyping, setCurrentTyping] = useState([]);
 
   useEffect(() => {
     function splitStringIntoGroups(string, wordsPerGroup = 8) {
@@ -20,6 +22,7 @@ function TypingTest() {
     }
 
     setToBeTyped(splitStringIntoGroups(output));
+    setCurrentTyping(splitStringIntoGroups(output)[0]);
   }, [output]);
 
   useEffect(() => {
@@ -29,6 +32,21 @@ function TypingTest() {
 
     console.log(toBeTyped);
   }, [toBeTyped]);
+
+  return(
+    <div>
+      <h2 style={{color:"blue"}}>{currentTyping}</h2>
+      <br />
+      {toBeTyped.map((val)=>{
+        return(
+          <div>
+            <h2>{val}</h2>
+          </div>
+        )
+      })}
+      
+    </div>
+  )
 }
 
 export default TypingTest;
