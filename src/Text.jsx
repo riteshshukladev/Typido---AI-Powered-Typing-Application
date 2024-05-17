@@ -47,12 +47,30 @@ function TypingTest() {
     setIndicators(newIndicators);
     setToBeTyped([]);
     setCurrentTyping(toBeTyped[indicators.startIndex]);
-
-
+    // setTyped([...typed, currentTyping]);
+    setTyped(prevTyped=>{
+      let newTyped = [...prevTyped , currentTyping]; 
+      if(newTyped.length >4){
+        // newTyped.shift();
+        // return newTyped.slice(1);
+        newTyped = newTyped.slice(newTyped.length-4);
+      }
+      return newTyped;
+    })
   }
 
   return (
     <div>
+    {
+      typed.map((val , index) => {
+        return (
+          <div  index = {index} >
+            <h2>{val}</h2>
+          </div>
+        );
+      })
+    }
+    <br />
       <h2 style={{ color: "blue" }}>{currentTyping}</h2>
       <br />
       <button onClick={handleBtnClick}>clickme</button>
