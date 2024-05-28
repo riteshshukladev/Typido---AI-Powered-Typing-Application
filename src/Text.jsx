@@ -15,6 +15,8 @@ function TypingTest() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const typingAreaRef = useRef(null);
   const [typedCorrectness, setTypedCorrectness] = useState([]);
+  const [timer, setTimer] = useState(0);
+  const timerRef = useRef(null);
 
 
   useEffect(() => {
@@ -28,6 +30,19 @@ function TypingTest() {
 
       return groups;
     }
+
+
+    useEffect(() => {
+      typingAreaRef.current.focus();
+
+      const timerOn = () => {
+        timerRef.current = setInterval(() => {
+          setTimer((prev) => prev + 1);
+        }, 1000);
+      }
+    }, []);
+  
+  
 
     // setToBeTyped(splitStringIntoGroups(output));
     // setCurrentTyping(splitStringIntoGroups(output)[0]);
@@ -45,33 +60,34 @@ function TypingTest() {
 
 
 
-  useEffect(() => {
-    typingAreaRef.current.focus();
-  }, []);
-
-
   const handleBtnClick = () => {
-    let newIndicators = { ...indicators };
-    newIndicators.startIndex += 1;
-    newIndicators.endIndex += 1;
-    setIndicators(newIndicators);
-    setToBeTyped([]);
-    setCurrentTyping(toBeTyped[indicators.startIndex]);
-    // setTyped([...typed, currentTyping]);
-    setTyped(prevTyped => {
-      let newTyped = [...prevTyped, currentTyping];
+
+    setIndicators((prev) => {
+      const newIndicators = {
+        ...prev,
+        startIndex: prev.startIndex + 1,
+        endIndex: prev.endIndex + 1,
+      };
+
+      setToBeTyped([]);
+
+      setCurrentTyping((prev) => prev[newIndicators.startIndex]);
+
+      return newIndicators;
+    });
+
+    setTyped((prev) => {
+      const newTyped = [...prev, currentTyping];
       if (newTyped.length > 4) {
-        // newTyped.shift();
-        // return newTyped.slice(1);
-        newTyped = newTyped.slice(newTyped.length - 4);
+        return newTyped.slice(1);
       }
       return newTyped;
-    })
+    });
   }
 
 
   const handleKeyDown = (e) => {
-    if (e.key.length === 1 || e.key === 'Backspace') { // Only process character keys and Backspace
+    if (e.key.length === 1 || e.key === 'Backspace') { 
       const currentChar = currentTyping[currentIndex];
       const correct = e.key === currentChar;
       setTypedCorrectness((prev) => [...prev, correct]);
