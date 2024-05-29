@@ -1,4 +1,4 @@
-import React, { useState, useEffect , useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 function TypingTest() {
@@ -7,7 +7,7 @@ function TypingTest() {
 
   const [toBeTyped, setToBeTyped] = useState([]);
   const [typed, setTyped] = useState([]);
-  const [currentTyping, setCurrentTyping] = useState('');
+  const [currentTyping, setCurrentTyping] = useState("");
   const [indicators, setIndicators] = useState({
     startIndex: 0,
     endIndex: 4,
@@ -17,7 +17,7 @@ function TypingTest() {
   const [typedCorrectness, setTypedCorrectness] = useState([]);
   const [timer, setTimer] = useState(0);
   const timerRef = useRef(null);
-
+  const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
     function splitStringIntoGroups(string, wordsPerGroup = 8) {
@@ -31,22 +31,6 @@ function TypingTest() {
       return groups;
     }
 
-
-    useEffect(() => {
-      typingAreaRef.current.focus();
-
-      const timerOn = () => {
-        timerRef.current = setInterval(() => {
-          setTimer((prev) => prev + 1);
-        }, 1000);
-      }
-    }, []);
-  
-  
-
-    // setToBeTyped(splitStringIntoGroups(output));
-    // setCurrentTyping(splitStringIntoGroups(output)[0]);
-
     let temp = splitStringIntoGroups(output);
     console.log(temp);
     let newToBeTyped = [...toBeTyped];
@@ -56,12 +40,30 @@ function TypingTest() {
     setToBeTyped(newToBeTyped.slice(1));
 
     setCurrentTyping(temp[indicators.startIndex]);
+
+
+    
   }, [output, indicators]);
 
+  useEffect(() => {
+    typingAreaRef.current.focus();
+    
+  }, []);
+  
+  useEffect(() => {
+    
+    if (isTyping) {
+      timerRef.current = setInterval(() => {
+        setTimer((prev) => prev + 1);
+      
+      }, 1000)
+    }
+
+    return () => clearInterval(timerRef.current);
+  },[isTyping])
 
 
   const handleBtnClick = () => {
-
     setIndicators((prev) => {
       const newIndicators = {
         ...prev,
@@ -83,15 +85,21 @@ function TypingTest() {
       }
       return newTyped;
     });
-  }
-
+  };
 
   const handleKeyDown = (e) => {
-    if (e.key.length === 1 || e.key === 'Backspace') { 
+    if (e.key.length === 1 || e.key === "Backspace") {
       const currentChar = currentTyping[currentIndex];
+      // Timer starts when the user starts typing
+      
       const correct = e.key === currentChar;
+      if (!isTyping) {
+        setIsTyping(true);
+      }
+      
+
       setTypedCorrectness((prev) => [...prev, correct]);
-      if (e.key === 'Backspace') {
+      if (e.key === "Backspace") {
         setCurrentIndex((prev) => {
           if (prev === 0) {
             setTypedCorrectness([]);
@@ -100,56 +108,51 @@ function TypingTest() {
           setTypedCorrectness((prev) => prev.slice(0, prev.length - 1));
           return prev - 1;
         });
-      return;
+        return;
+      }
+      setCurrentIndex((prev) => {
+        const newIndex = prev + 1;
+        if (newIndex === currentTyping.length) {
+          setTypedCorrectness([]);
+          handleBtnClick();
+          return 0;
+        }
+        return newIndex;
+      });
     }
-    setCurrentIndex((prev) => {
-      const newIndex = prev + 1;
-      if (newIndex === currentTyping.length) {
-        setTypedCorrectness([]);
-        handleBtnClick();
-        return 0;
+  };
+
+  const characterSpan = () => {
+    return currentTyping.split("").map((char, index) => {
+      let color = "black";
+      if (index < currentIndex) {
+        color = typedCorrectness[index] ? "green" : "red";
+        console.log(typedCorrectness[index]);
+      } else if (index === currentIndex) {
+        color = "lightblue";
       }
-      return newIndex;
+      return (
+        <span key={index} style={{ color }}>
+          {char}
+        </span>
+      );
     });
-  }
-};
-
-  // window.onload=() => {
-  //   typingAreaRef.current.focus();
-  // }
-
-
-  const characterSpan = () =>{
-    return currentTyping.split('').map((char, index) => {
-      let color = 'black';
-       if (index < currentIndex) {
-         color = typedCorrectness[index] ? 'green' : 'red';
-         console.log(typedCorrectness[index])
-      }
-      else if (index === currentIndex) {
-        color = 'lightblue';
-      }
-      return <span key={index} style={{ color }}>{char}</span>
-    })
-  }
-
+  };
 
   return (
     <div>
-    {
-      typed.map((val , index) => {
+      {typed.map((val, index) => {
         return (
-          <div index = {index} >
+          <div index={index}>
             <h2>{val}</h2>
           </div>
         );
-      })
-    }
+      })}
 
       <div
         tabIndex={0}
         onKeyDown={handleKeyDown}
-        style={{ cursor: 'text', color: 'white'  ,fontSize:'1.5rem'}}
+        style={{ cursor: "text", color: "white", fontSize: "1.5rem" }}
         ref={typingAreaRef}
         onBlur={() => typingAreaRef.current.focus()}
       >
@@ -157,10 +160,10 @@ function TypingTest() {
         {characterSpan()}
       </div>
 
-
-      {toBeTyped.map((val , index) => {
+      <div>{timer}</div>
+      {toBeTyped.map((val, index) => {
         return (
-          <div index = {index} >
+          <div index={index}>
             <h2>{val}</h2>
           </div>
         );
@@ -170,4 +173,3 @@ function TypingTest() {
 }
 
 export default TypingTest;
-
