@@ -40,30 +40,23 @@ function TypingTest() {
     setToBeTyped(newToBeTyped.slice(1));
 
     setCurrentTyping(temp[indicators.startIndex]);
-
-
-    
   }, [output, indicators]);
 
   useEffect(() => {
     typingAreaRef.current.focus();
-    
   }, []);
-  
+
   useEffect(() => {
-    
     if (isTyping) {
       timerRef.current = setInterval(() => {
         setTimer((prev) => prev + 1);
-      
-      }, 1000)
+      }, 1000);
     }
 
     return () => clearInterval(timerRef.current);
-  },[isTyping])
+  }, [isTyping]);
 
-
-  const handleBtnClick = () => {
+  const handleBtnClick = (filteredArray) => {
     setIndicators((prev) => {
       const newIndicators = {
         ...prev,
@@ -79,7 +72,7 @@ function TypingTest() {
     });
 
     setTyped((prev) => {
-      const newTyped = [...prev, currentTyping];
+      const newTyped = [...prev, filteredArray];
       if (newTyped.length > 4) {
         return newTyped.slice(1);
       }
@@ -87,38 +80,47 @@ function TypingTest() {
     });
   };
 
+
   const handleKeyDown = (e) => {
     if (e.key.length === 1 || e.key === "Backspace") {
       const currentChar = currentTyping[currentIndex];
-      // Timer starts when the user starts typing
-      
       const correct = e.key === currentChar;
+
+      
       if (!isTyping) {
         setIsTyping(true);
       }
-      
 
-      setTypedCorrectness((prev) => [...prev, correct]);
+      let updatedCorrectness = [...typedCorrectness, correct];
+
       if (e.key === "Backspace") {
-        setCurrentIndex((prev) => {
-          if (prev === 0) {
-            setTypedCorrectness([]);
-            return 0;
-          }
-          setTypedCorrectness((prev) => prev.slice(0, prev.length - 1));
-          return prev - 1;
-        });
+        if (currentIndex === 0) {
+          setTypedCorrectness([]);
+          setCurrentIndex(0);
+        } else {
+          updatedCorrectness = typedCorrectness.slice(
+            0,
+            typedCorrectness.length - 1
+          );
+          setTypedCorrectness(updatedCorrectness);
+          setCurrentIndex(currentIndex - 1);
+        }
         return;
       }
-      setCurrentIndex((prev) => {
-        const newIndex = prev + 1;
-        if (newIndex === currentTyping.length) {
-          setTypedCorrectness([]);
-          handleBtnClick();
-          return 0;
-        }
-        return newIndex;
-      });
+
+      if (currentIndex + 1 === currentTyping.length) {
+        // Immediately create and use the filtered array
+        const filteredArray = createFilteredTyped(
+          updatedCorrectness,
+          currentTyping
+        );
+        handleBtnClick(filteredArray);
+        setTypedCorrectness([]); 
+        setCurrentIndex(0); 
+      } else {
+        setTypedCorrectness(updatedCorrectness);
+        setCurrentIndex(currentIndex + 1);
+      }
     }
   };
 
@@ -139,12 +141,33 @@ function TypingTest() {
     });
   };
 
+  const createFilteredTyped = (typedCorrectness, currentTyping) => {
+    let filteredArray = [];
+    for (let i = 0; i < typedCorrectness.length; i++) {
+      filteredArray.push({
+        state: typedCorrectness[i],
+        char: currentTyping[i],
+      });
+    }
+    return filteredArray;
+  };
   return (
     <div>
       {typed.map((val, index) => {
         return (
           <div index={index}>
-            <h2>{val}</h2>
+            <h2>
+              {val.map((val, index) => {
+                return (
+                  <span
+                    index={index}
+                    style={{ color: val.state ? "green" : "red" }}
+                  >
+                    {val.char}
+                  </span>
+                );
+              })}
+            </h2>
           </div>
         );
       })}
