@@ -71,7 +71,7 @@ function TypingTest() {
 
       return newIndicators;
     });
-
+    
     setTyped((prev) => {
       const newTyped = [...prev, filteredArray];
       if (newTyped.length > 4) {
@@ -112,6 +112,7 @@ function TypingTest() {
       if (toBeTyped[0] === undefined && currentIndex + 1 === currentTyping.length) {
         clearInterval(timerRef.current);
         setTypingCompleted(true);
+        typingAreaRef.current.blur();
         return;
       }
       if (currentIndex + 1 === currentTyping.length) {
