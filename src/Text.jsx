@@ -18,6 +18,7 @@ function TypingTest() {
   const [timer, setTimer] = useState(0);
   const timerRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [typingCompleted, setTypingCompleted] = useState(false);
 
   useEffect(() => {
     function splitStringIntoGroups(string, wordsPerGroup = 8) {
@@ -108,6 +109,11 @@ function TypingTest() {
         return;
       }
 
+      if (toBeTyped[0] === undefined && currentIndex + 1 === currentTyping.length) {
+        clearInterval(timerRef.current);
+        setTypingCompleted(true);
+        return;
+      }
       if (currentIndex + 1 === currentTyping.length) {
         // Immediately create and use the filtered array
         const filteredArray = createFilteredTyped(
@@ -141,6 +147,8 @@ function TypingTest() {
     });
   };
 
+
+
   const createFilteredTyped = (typedCorrectness, currentTyping) => {
     let filteredArray = [];
     for (let i = 0; i < typedCorrectness.length; i++) {
@@ -151,6 +159,17 @@ function TypingTest() {
     }
     return filteredArray;
   };
+
+
+  if (typingCompleted) {
+    return (
+      <div>
+        <h1>Typing Completed!</h1>
+        <h2>Time taken: {timer} seconds</h2>
+      </div>
+    );
+  }
+
   return (
     <div>
       {typed.map((val, index) => {
