@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useLocation } from "react-router-dom";
+import './styleText.css';
 
 function TypingTest() {
   const location = useLocation();
@@ -78,7 +79,7 @@ function TypingTest() {
     
     setTyped((prev) => {
       const newTyped = [...prev, filteredArray];
-      if (newTyped.length > 4) {
+      if (newTyped.length > 3) {
         return newTyped.slice(1);
       }
       return newTyped;
@@ -179,11 +180,11 @@ function TypingTest() {
   
 
     <div id="Parent-Container" className="bg-black w-screen h-screen px-0 py-0 mx-0 my-0">
-      <div className="typing-area w-full h-full px-8 py-8 flex flex-col justify-center	items-center">
-        <section className="typed_section flex justify-start flex-col items-start">
+      <div className="typing-area max-w-full max-h-full	 px-5 py-5">
+        <section className="typed_section text-center">
           {typed.map((val, index) => {
             return (
-              <div key={index} className="typed">
+              <div key={index} className="typed pt-4 text-lg font-light">
                 {val.map((val, index) => {
                   return (
                     <span
@@ -199,9 +200,9 @@ function TypingTest() {
           })}
         </section>
 
-        <section className="Typing_section w-full text-center my-5 ">
+        <section className="Typing_section w-full px-5 py-5 text-center">
           <div
-            className="typing border-t-0.2 border-b-0.2 border-slate-400	 py-6 tracking-wider" 
+            className="typing border-t-0.2 border-b-0.2 border-slate-40 py-6 tracking-wider" 
             
             tabIndex={0}
             onKeyDown={handleKeyDown}
@@ -213,10 +214,10 @@ function TypingTest() {
           </div>
         </section>
 
-        <section className="to_be_typed_section ">
+        <section className="to_be_typed_section  text-center">
           {toBeTyped.map((val, index) => {
             return (
-              <div key={index} className="to_be_typed text-white pb-4 text-lg" >
+              <div key={index} className="to_be_typed text-white pb-4 text-lg font-light	" >
                 <h2>{val}</h2>
               </div>
             );
