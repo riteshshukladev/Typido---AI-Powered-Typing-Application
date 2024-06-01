@@ -21,7 +21,7 @@ function TypingTest() {
   const [typingCompleted, setTypingCompleted] = useState(false);
 
 
-  const splitStringIntoGroups = useCallback((string, wordsPerGroup = 8) => {
+  const splitStringIntoGroups = useCallback((string, wordsPerGroup = 12) => {
     const words = string.split(" ");
     let groups = [];
 
@@ -60,7 +60,8 @@ function TypingTest() {
     return () => clearInterval(timerRef.current);
   }, [isTyping]);
 
-  const handleBtnClick = (filteredArray) => {
+
+  const handleBtnClick = useCallback((filteredArray) => {
     setIndicators((prev) => {
       const newIndicators = {
         ...prev,
@@ -82,7 +83,7 @@ function TypingTest() {
       }
       return newTyped;
     });
-  };
+  }, [setIndicators, setToBeTyped, setCurrentTyping, setTyped]);
 
 
   const handleKeyDown = (e) => {
@@ -134,9 +135,9 @@ function TypingTest() {
     }
   };
 
-  const characterSpan = () => {
+  const characterSpan = useMemo(() => {
     return currentTyping.split("").map((char, index) => {
-      let color = "black";
+      let color = "white";
       if (index < currentIndex) {
         color = typedCorrectness[index] ? "green" : "red";
         console.log(typedCorrectness[index]);
@@ -149,7 +150,7 @@ function TypingTest() {
         </span>
       );
     });
-  };
+  },[ currentTyping, currentIndex, typedCorrectness]);
 
 
 
@@ -169,51 +170,63 @@ function TypingTest() {
     return (
       <div>
         <h1>Typing Completed!</h1>
-        <h2>Time taken: {timer} seconds</h2>
+        <h2>Time taken: {timer} seconds</h2>  
       </div>
     );
   }
 
   return (
-    <div>
-      {typed.map((val, index) => {
-        return (
-          <div index={index}>
-            <h2>
-              {val.map((val, index) => {
-                return (
-                  <span
-                    index={index}
-                    style={{ color: val.state ? "green" : "red" }}
-                  >
-                    {val.char}
-                  </span>
-                );
-              })}
-            </h2>
-          </div>
-        );
-      })}
+  
 
-      <div
-        tabIndex={0}
-        onKeyDown={handleKeyDown}
-        style={{ cursor: "text", color: "white", fontSize: "1.5rem" }}
-        ref={typingAreaRef}
-        onBlur={() => typingAreaRef.current.focus()}
-      >
-        {console.log(characterSpan())}
-        {characterSpan()}
+    <div id="Parent-Container" className="bg-black w-screen h-screen px-0 py-0 mx-0 my-0">
+      <div className="typing-area w-full h-full px-8 py-8 flex flex-col justify-center	items-center">
+        <section className="typed_section flex justify-start flex-col items-start">
+          {typed.map((val, index) => {
+            return (
+              <div key={index} className="typed">
+                {val.map((val, index) => {
+                  return (
+                    <span
+                      key={index}
+                      style={{ color: val.state ? "green" : "red" }}
+                    >
+                      {val.char}
+                    </span>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </section>
+
+        <section className="Typing_section w-full text-center my-5 ">
+          <div
+            className="typing border-t-0.2 border-b-0.2 border-slate-400	 py-6 tracking-wider" 
+            
+            tabIndex={0}
+            onKeyDown={handleKeyDown}
+            style={{ cursor: "text", color: "white", fontSize: "1.5rem" , outline: "none", wordSpacing:'2px'}}
+            ref={typingAreaRef}
+            onBlur={() => typingAreaRef.current.focus()}
+          >
+            {characterSpan}
+          </div>
+        </section>
+
+        <section className="to_be_typed_section ">
+          {toBeTyped.map((val, index) => {
+            return (
+              <div key={index} className="to_be_typed text-white pb-4 text-lg" >
+                <h2>{val}</h2>
+              </div>
+            );
+          })}
+        </section>
       </div>
 
-      <div>{timer}</div>
-      {toBeTyped.map((val, index) => {
-        return (
-          <div index={index}>
-            <h2>{val}</h2>
-          </div>
-        );
-      })}
+      {/* <div className="timer">
+        <h1>{timer}</h1>
+        </div> */}
     </div>
   );
 }
