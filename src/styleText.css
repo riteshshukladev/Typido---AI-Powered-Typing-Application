@@ -43,7 +43,28 @@
 
  
 }
+.to_be_typed_section .to_be_typed:nth-child(1){
+  color:grey
+}
 
+.to_be_typed_section .to_be_typed:nth-child(2){
+  color: rgb(81, 80, 80);
+}
 
+.to_be_typed_section .to_be_typed:nth-child(3){
+  color:rgb(50, 50, 50);
+}
 
+.timer{
+  position: absolute;
+  /* top: 90%; */
+  bottom: 5%;
+  left: 50%;
+  transform: translate(
+    -50%,
+    -50%
+  );
+  font-size: 1.5rem;
+  color: grey;
+}
 

@@ -20,6 +20,7 @@ function TypingTest() {
   const timerRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
   const [typingCompleted, setTypingCompleted] = useState(false);
+  const [isMinutes, setIsMinutes] = useState('00');
 
 
   const splitStringIntoGroups = useCallback((string, wordsPerGroup = 12) => {
@@ -140,10 +141,10 @@ function TypingTest() {
     return currentTyping.split("").map((char, index) => {
       let color = "white";
       if (index < currentIndex) {
-        color = typedCorrectness[index] ? "green" : "red";
+        color = typedCorrectness[index] ? "rgba(125, 209, 138, 1)" : "rgba(216, 89, 89, 1)";
         console.log(typedCorrectness[index]);
       } else if (index === currentIndex) {
-        color = "lightblue";
+        color = "rgba(80, 107, 158, 1)";
       }
       return (
         <span key={index} style={{ color }}>
@@ -184,12 +185,12 @@ function TypingTest() {
         <section className="typed_section text-center">
           {typed.map((val, index) => {
             return (
-              <div key={index} className="typed pt-4 text-lg font-light">
+              <div key={index} className="typed pt-4 text-xl font-light tracking-wide">
                 {val.map((val, index) => {
                   return (
                     <span
                       key={index}
-                      style={{ color: val.state ? "green" : "red" }}
+                      style={{ color: val.state ? "rgba(125, 209, 138, 1)" : "rgba(216, 89, 89, 1)" }}
                     >
                       {val.char}
                     </span>
@@ -202,7 +203,7 @@ function TypingTest() {
 
         <section className="Typing_section w-full px-5 py-5 text-center">
           <div
-            className="typing border-t-0.2 border-b-0.2 border-slate-40 py-6 tracking-wider" 
+            className="typing border-t-0.2 border-b-0.2 border-slate-40 py-6 tracking-wide" 
             
             tabIndex={0}
             onKeyDown={handleKeyDown}
@@ -217,7 +218,7 @@ function TypingTest() {
         <section className="to_be_typed_section  text-center">
           {toBeTyped.map((val, index) => {
             return (
-              <div key={index} className="to_be_typed text-white pb-4 text-lg font-light	" >
+              <div key={index} className="to_be_typed pb-4 text-xl font-light tracking-wide" >
                 <h2>{val}</h2>
               </div>
             );
@@ -225,9 +226,9 @@ function TypingTest() {
         </section>
       </div>
 
-      {/* <div className="timer">
+      <div className="timer">
         <h1>{timer}</h1>
-        </div> */}
+        </div>
     </div>
   );
 }
