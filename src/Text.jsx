@@ -1,6 +1,15 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { useLocation } from "react-router-dom";
-import './styleText.css';
+import "./styleText.css";
+import MetricCalculation from "./components/calculation/MetricCalculation";
+
+import Stat from "./components/stat";
 
 function TypingTest() {
   const location = useLocation();
@@ -20,23 +29,38 @@ function TypingTest() {
   const timerRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
   const [typingCompleted, setTypingCompleted] = useState(false);
-  const [isMinutes, setIsMinutes] = useState('00');
+  const [minutes, setMinutes] = useState(0);
+  const [matrics, setMatrics] = useState({
+    accuracy: 0,
+    grossWPM: 0,
+    errorRate: 0,
+    netWPM: 0,
+  });
+
+  const matricsValues = useRef({
+    correctCounter: 0,
+    errorCounter: 0,
+    totalKeystrokes: 0,
+    totalCharactersTyped: 0,
+  });
 
 
-  const splitStringIntoGroups = useCallback((string, wordsPerGroup = 12) => {
-    const words = string.split(" ");
-    let groups = [];
 
-    for (let i = 0; i < words.length; i += wordsPerGroup) {
-      groups.push(words.slice(i, i + wordsPerGroup).join(" "));
-    }
+  const splitStringIntoGroups = useCallback(
+    (string, wordsPerGroup = 12) => {
+      const words = string.split(" ");
+      let groups = [];
 
-    return groups;
-  }, [output]);
+      for (let i = 0; i < words.length; i += wordsPerGroup) {
+        groups.push(words.slice(i, i + wordsPerGroup).join(" "));
+      }
+
+      return groups;
+    },
+    [output]
+  );
 
   useEffect(() => {
-    
-
     let temp = splitStringIntoGroups(output);
     console.log(temp);
     let newToBeTyped = [...toBeTyped];
@@ -52,48 +76,84 @@ function TypingTest() {
     typingAreaRef.current.focus();
   }, []);
 
+// After completion Calculation of the matrics
+ useEffect(() => {
+    if (typingCompleted) {
+      const calculatedMetrics = MetricCalculation({
+        correctCounter: matricsValues.current.correctCounter,
+        errorCounter: matricsValues.current.errorCounter,
+        totalKeystrokes: matricsValues.current.totalKeystrokes,
+        totalCharactersTyped: matricsValues.current.totalCharactersTyped,
+        timeInMinutes: `${minutes / 2}.${timer}`
+      });
+      setMatrics(calculatedMetrics);
+
+   }
+  }, [typingCompleted]);
+  
+
   useEffect(() => {
     if (isTyping) {
       timerRef.current = setInterval(() => {
-        setTimer((prev) => prev + 1);
+        setTimer((prev) => {
+          if (prev >= 59) {
+            // Increment minutes and reset timer
+            setMinutes((mPrev) => mPrev + 1);
+            return 0;
+          } else {
+            return prev + 1;
+          }
+        });
       }, 1000);
     }
 
     return () => clearInterval(timerRef.current);
   }, [isTyping]);
 
+  const handleBtnClick = useCallback(
+    (filteredArray) => {
+      setIndicators((prev) => {
+        const newIndicators = {
+          ...prev,
+          startIndex: prev.startIndex + 1,
+          endIndex: prev.endIndex + 1,
+        };
 
-  const handleBtnClick = useCallback((filteredArray) => {
-    setIndicators((prev) => {
-      const newIndicators = {
-        ...prev,
-        startIndex: prev.startIndex + 1,
-        endIndex: prev.endIndex + 1,
-      };
+        setToBeTyped([]);
 
-      setToBeTyped([]);
+        setCurrentTyping((prev) => prev[newIndicators.startIndex]);
 
-      setCurrentTyping((prev) => prev[newIndicators.startIndex]);
+        return newIndicators;
+      });
 
-      return newIndicators;
-    });
-    
-    setTyped((prev) => {
-      const newTyped = [...prev, filteredArray];
-      if (newTyped.length > 3) {
-        return newTyped.slice(1);
-      }
-      return newTyped;
-    });
-  }, [setIndicators, setToBeTyped, setCurrentTyping, setTyped]);
-
+      setTyped((prev) => {
+        const newTyped = [...prev, filteredArray];
+        if (newTyped.length > 3) {
+          return newTyped.slice(1);
+        }
+        return newTyped;
+      });
+    },
+    [setIndicators, setToBeTyped, setCurrentTyping, setTyped]
+  );
 
   const handleKeyDown = (e) => {
     if (e.key.length === 1 || e.key === "Backspace") {
       const currentChar = currentTyping[currentIndex];
       const correct = e.key === currentChar;
 
-      
+      if (e.key !== "Backspace") {
+          
+        if (correct) {
+          matricsValues.current.correctCounter++;
+    
+        } else {
+          matricsValues.current.errorCounter++;
+        }
+        matricsValues.current.totalKeystrokes++;
+        matricsValues.current.totalCharactersTyped++;
+      }
+
       if (!isTyping) {
         setIsTyping(true);
       }
@@ -104,6 +164,8 @@ function TypingTest() {
         if (currentIndex === 0) {
           setTypedCorrectness([]);
           setCurrentIndex(0);
+
+          matricsValues.current.totalKeystrokes++;
         } else {
           updatedCorrectness = typedCorrectness.slice(
             0,
@@ -111,11 +173,21 @@ function TypingTest() {
           );
           setTypedCorrectness(updatedCorrectness);
           setCurrentIndex(currentIndex - 1);
+          matricsValues.current.totalKeystrokes++;
+          matricsValues.current.totalCharactersTyped--;
+
+          console.log(matricsValues.current.totalCharactersTyped);
+          console.log(matricsValues.current.totalKeystrokes);
         }
         return;
       }
 
-      if (toBeTyped[0] === undefined && currentIndex + 1 === currentTyping.length) {
+      console.log(matricsValues);
+
+      if (
+        toBeTyped[0] === undefined &&
+        currentIndex + 1 === currentTyping.length
+      ) {
         clearInterval(timerRef.current);
         setTypingCompleted(true);
         typingAreaRef.current.blur();
@@ -128,8 +200,8 @@ function TypingTest() {
           currentTyping
         );
         handleBtnClick(filteredArray);
-        setTypedCorrectness([]); 
-        setCurrentIndex(0); 
+        setTypedCorrectness([]);
+        setCurrentIndex(0);
       } else {
         setTypedCorrectness(updatedCorrectness);
         setCurrentIndex(currentIndex + 1);
@@ -141,10 +213,12 @@ function TypingTest() {
     return currentTyping.split("").map((char, index) => {
       let color = "white";
       if (index < currentIndex) {
-        color = typedCorrectness[index] ? "rgba(125, 209, 138, 1)" : "rgba(216, 89, 89, 1)";
+        color = typedCorrectness[index]
+          ? "rgba(125, 209, 138, 1)"
+          : "rgba(216, 89, 89, 1)";
         console.log(typedCorrectness[index]);
       } else if (index === currentIndex) {
-        color = "rgba(80, 107, 158, 1)";
+        color = "rgba(94, 115, 97, 1)";
       }
       return (
         <span key={index} style={{ color }}>
@@ -152,9 +226,7 @@ function TypingTest() {
         </span>
       );
     });
-  },[ currentTyping, currentIndex, typedCorrectness]);
-
-
+  }, [currentTyping, currentIndex, typedCorrectness]);
 
   const createFilteredTyped = (typedCorrectness, currentTyping) => {
     let filteredArray = [];
@@ -167,30 +239,42 @@ function TypingTest() {
     return filteredArray;
   };
 
-
   if (typingCompleted) {
     return (
       <div>
         <h1>Typing Completed!</h1>
-        <h2>Time taken: {timer} seconds</h2>  
+        <h2>Time taken: {timer} seconds</h2>
+        <h2>Accuracy: {matrics.accuracy}%</h2>
+        <h2>Gross WPM: {matrics.grossWPM}</h2>
+        <h2>Error Rate: {matrics.errorRate}%</h2>
+        <h2>Net WPM: {matrics.netWPM}</h2>
       </div>
     );
   }
 
-  return (
-  
 
-    <div id="Parent-Container" className="bg-black w-screen h-screen px-0 py-0 mx-0 my-0">
+  return (
+    <div
+      id="Parent-Container"
+      className="bg-black w-screen h-screen px-0 py-0 mx-0 my-0"
+    >
       <div className="typing-area max-w-full max-h-full	 px-5 py-5">
         <section className="typed_section text-center">
           {typed.map((val, index) => {
             return (
-              <div key={index} className="typed pt-4 text-xl font-light tracking-wide">
+              <div
+                key={index}
+                className="typed pt-4 text-xl font-light tracking-wide"
+              >
                 {val.map((val, index) => {
                   return (
                     <span
                       key={index}
-                      style={{ color: val.state ? "rgba(125, 209, 138, 1)" : "rgba(216, 89, 89, 1)" }}
+                      style={{
+                        color: val.state
+                          ? "rgba(125, 209, 138, 1)"
+                          : "rgba(216, 89, 89, 1)",
+                      }}
                     >
                       {val.char}
                     </span>
@@ -203,11 +287,16 @@ function TypingTest() {
 
         <section className="Typing_section w-full px-5 py-5 text-center">
           <div
-            className="typing border-t-0.2 border-b-0.2 border-slate-40 py-6 tracking-wide" 
-            
+            className="typing border-t-0.2 border-b-0.2 border-slate-40 py-6 tracking-wide"
             tabIndex={0}
             onKeyDown={handleKeyDown}
-            style={{ cursor: "text", color: "white", fontSize: "1.5rem" , outline: "none", wordSpacing:'2px'}}
+            style={{
+              cursor: "text",
+              color: "white",
+              fontSize: "1.5rem",
+              outline: "none",
+              wordSpacing: "2px",
+            }}
             ref={typingAreaRef}
             onBlur={() => typingAreaRef.current.focus()}
           >
@@ -218,7 +307,10 @@ function TypingTest() {
         <section className="to_be_typed_section  text-center">
           {toBeTyped.map((val, index) => {
             return (
-              <div key={index} className="to_be_typed pb-4 text-xl font-light tracking-wide" >
+              <div
+                key={index}
+                className="to_be_typed pb-4 text-xl font-light tracking-wide"
+              >
                 <h2>{val}</h2>
               </div>
             );
@@ -227,9 +319,17 @@ function TypingTest() {
       </div>
 
       <div className="timer">
-        <h1>{timer}</h1>
-        </div>
+        <span>
+          {minutes / 2}:{timer}
+        </span>
+      </div>
+
+
+      {typingCompleted && <Stat matrics={matrics} />}
     </div>
+
+
+    
   );
 }
 
