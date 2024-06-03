@@ -11,12 +11,19 @@ const MetricCalculation = ({correctCounter , errorCounter , totalKeystrokes , to
 
     const netWPM = (grossWPM - errorRate).toFixed(2);
 
+    const correctWordsPM = (correctCounter / 5) / timeInMinutes;
+
+    const keyStrokeAccuracy = (correctCounter / totalKeystrokes) * 100;
+
     return {
         accuracy,
         grossWPM,
         errorRate,
-        netWPM
+        netWPM,
+        correctCounter,
+        keyStrokeAccuracy,
     }
 }
 
 export default MetricCalculation;
+export {accuracy, grossWPM, errorRate, netWPM, correctCounter, keyStrokeAccuracy}

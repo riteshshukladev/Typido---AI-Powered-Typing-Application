@@ -6,6 +6,7 @@ import BoxPanel from './BoxPanel'
 import TextGenrate from './TextGenrate'
 import Text from './Text'
 import ControlBox from './ControlBox'
+import StatDisplay from './components/stat/StatDisplay'
 function App() {
   
 
@@ -15,7 +16,9 @@ function App() {
       <Route path='/' element={<ControlBox/>} />
       <Route path='/generate' >
         <Route index element={<TextGenrate/>} />
-        <Route path='text' element={<Text/>} />
+          <Route path='text' element={<Text />}>
+            <Route path='detailed-stat' element ={<StatDisplay/>}></Route>
+        </Route>
       </Route>
     </Routes>
     </>

@@ -44,8 +44,6 @@ function TypingTest() {
     totalCharactersTyped: 0,
   });
 
-
-
   const splitStringIntoGroups = useCallback(
     (string, wordsPerGroup = 12) => {
       const words = string.split(" ");
@@ -76,21 +74,19 @@ function TypingTest() {
     typingAreaRef.current.focus();
   }, []);
 
-// After completion Calculation of the matrics
- useEffect(() => {
+  // After completion Calculation of the matrics
+  useEffect(() => {
     if (typingCompleted) {
       const calculatedMetrics = MetricCalculation({
         correctCounter: matricsValues.current.correctCounter,
         errorCounter: matricsValues.current.errorCounter,
         totalKeystrokes: matricsValues.current.totalKeystrokes,
         totalCharactersTyped: matricsValues.current.totalCharactersTyped,
-        timeInMinutes: `${minutes / 2}.${timer}`
+        timeInMinutes: `${minutes / 2}.${timer}`,
       });
       setMatrics(calculatedMetrics);
-
-   }
+    }
   }, [typingCompleted]);
-  
 
   useEffect(() => {
     if (isTyping) {
@@ -143,10 +139,8 @@ function TypingTest() {
       const correct = e.key === currentChar;
 
       if (e.key !== "Backspace") {
-          
         if (correct) {
           matricsValues.current.correctCounter++;
-    
         } else {
           matricsValues.current.errorCounter++;
         }
@@ -239,18 +233,6 @@ function TypingTest() {
     return filteredArray;
   };
 
-  if (typingCompleted) {
-    return (
-      <div>
-        <h1>Typing Completed!</h1>
-        <h2>Time taken: {timer} seconds</h2>
-        <h2>Accuracy: {matrics.accuracy}%</h2>
-        <h2>Gross WPM: {matrics.grossWPM}</h2>
-        <h2>Error Rate: {matrics.errorRate}%</h2>
-        <h2>Net WPM: {matrics.netWPM}</h2>
-      </div>
-    );
-  }
 
 
   return (
@@ -324,12 +306,8 @@ function TypingTest() {
         </span>
       </div>
 
-
-      {typingCompleted && <Stat matrics={matrics} />}
+      {typingCompleted && <Stat matrics={matrics} className="Stat_Section" />}
     </div>
-
-
-    
   );
 }
 
