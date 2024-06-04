@@ -1,7 +1,26 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Stat = ({ ...props }) => {
+
+  const navigate = useNavigate();
+
+  const propsData = {
+
+    accuracy: props.matrics.accuracy,
+    grossWPM: props.matrics.grossWPM,
+    errorRate: props.matrics.errorRate,
+    netWPM: props.matrics.netWPM,
+    correctCounter: props.matrics.correctCounter,
+    keyStrokeAccuracy: props.matrics.keyStrokeAccuracy
+
+  }
+  const handleRouteBtn = () => { 
+    navigate('/generate/detailed-stat', { state: propsData});
+    
+  }
+
   return (
     <section className={props.className}>
       <div className="stat">
@@ -24,30 +43,7 @@ const Stat = ({ ...props }) => {
       </div>
 
       <div className="detailedbtn">
-        <Link 
-          // to={{
-          //   pathname: "/generate/detailed-stat",
-          //   state: {
-          //       accuracy: props.matrics.accuracy,
-          //       grossWPM: props.matrics.grossWPM,
-          //       errorRate: props.matrics.errorRate,
-          //       netWPM: props.matrics.netWPM,
-          //       correctCounter: props.matrics.correctCounter,
-          //       keyStrokeAccuracy: props.matrics.keyStrokeAccuracy,
-          //   },
-          // }}
-          to="/generate/detailed-stat"
-          state={{
-            accuracy: props.matrics.accuracy,
-            grossWPM: props.matrics.grossWPM,
-            errorRate: props.matrics.errorRate,
-            netWPM: props.matrics.netWPM,
-            correctCounter: props.matrics.correctCounter,
-            keyStrokeAccuracy: props.matrics.keyStrokeAccuracy,
-          }}
-        >
-          <button>Detailed Stat</button>
-        </Link>
+        <button onClick={handleRouteBtn}>Detailed Stat</button>
         <span>
           <img src="" alt="" />
         </span>
