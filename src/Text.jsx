@@ -35,6 +35,8 @@ function TypingTest() {
     grossWPM: 0,
     errorRate: 0,
     netWPM: 0,
+    correctCounter: 0,
+    keyStrokeAccuracy: 0,
   });
 
   const matricsValues = useRef({
@@ -59,15 +61,17 @@ function TypingTest() {
   );
 
   useEffect(() => {
-    let temp = splitStringIntoGroups(output);
-    console.log(temp);
-    let newToBeTyped = [...toBeTyped];
-    for (let i = indicators.startIndex; i < indicators.endIndex; i++) {
-      newToBeTyped.push(temp[i]);
-    }
-    setToBeTyped(newToBeTyped.slice(1));
+    if (output) {
+      let temp = splitStringIntoGroups(output);
+      console.log(temp);
+      let newToBeTyped = [...toBeTyped];
+      for (let i = indicators.startIndex; i < indicators.endIndex; i++) {
+        newToBeTyped.push(temp[i]);
+      }
+      setToBeTyped(newToBeTyped.slice(1));
 
-    setCurrentTyping(temp[indicators.startIndex]);
+      setCurrentTyping(temp[indicators.startIndex]);
+    }
   }, [output, indicators]);
 
   useEffect(() => {
@@ -233,7 +237,9 @@ function TypingTest() {
     return filteredArray;
   };
 
-
+  if (typingCompleted) {
+    console.log(matrics);
+  }
 
   return (
     <div

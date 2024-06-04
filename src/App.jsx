@@ -8,17 +8,14 @@ import Text from './Text'
 import ControlBox from './ControlBox'
 import StatDisplay from './components/stat/StatDisplay'
 function App() {
-  
-
   return (
     <>
     <Routes>
       <Route path='/' element={<ControlBox/>} />
       <Route path='/generate' >
         <Route index element={<TextGenrate/>} />
-          <Route path='text' element={<Text />}>
-            <Route path='detailed-stat' element ={<StatDisplay/>}></Route>
-        </Route>
+        <Route path='text' element={<Text />}></Route>
+        <Route path='detailed-stat' element ={<StatDisplay/>}></Route>
       </Route>
     </Routes>
     </>
