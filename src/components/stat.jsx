@@ -12,7 +12,7 @@ const Stat = ({ ...props }) => {
     grossWPM: props.matrics.grossWPM,
     errorRate: props.matrics.errorRate,
     netWPM: props.matrics.netWPM,
-    correctCounter: props.matrics.correctCounter,
+    correctWordsPM: props.matrics.correctWordsPM,
     keyStrokeAccuracy: props.matrics.keyStrokeAccuracy
 
   }

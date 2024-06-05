@@ -17,8 +17,9 @@
     -50%,
     -50%
   );
- 
+ color: rgb(160, 159, 159);
 }
+
 
 .to_be_typed_section{
 
@@ -45,7 +46,8 @@
  
 }
 .to_be_typed_section .to_be_typed:nth-child(1){
-  color:grey
+  color:gray
+  
 }
 
 .to_be_typed_section .to_be_typed:nth-child(2){
@@ -116,4 +118,24 @@ padding-top: 4rem;
   left: 90%;
   color: rgb(161, 161, 161);
 
+}
+
+@keyframes blink {
+  0% {opacity: 1;}
+  50% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+.cursor {
+  background-color: rgb(255, 255, 255);
+  width:2px;
+  /* width: 1ch; */
+  height: 2rem;
+  display: inline-block;
+ margin-bottom: -8px;
+  animation: blink 1s infinite;
+  margin-right: 2px;
+  
+  
+ 
 }

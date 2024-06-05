@@ -8,7 +8,13 @@ export default {
         1: "1px",
         1.5: "1.5px",
         2: "2px",
-      }
+      },
+      height: {
+        'custom':'600px'
+      },
+      width: {
+        'custom':'600px'
+      },
     },
   },
 

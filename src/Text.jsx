@@ -209,19 +209,20 @@ function TypingTest() {
 
   const characterSpan = useMemo(() => {
     return currentTyping.split("").map((char, index) => {
-      let color = "white";
+      let color = "grey";
       if (index < currentIndex) {
         color = typedCorrectness[index]
           ? "rgba(125, 209, 138, 1)"
           : "rgba(216, 89, 89, 1)";
         console.log(typedCorrectness[index]);
       } else if (index === currentIndex) {
-        color = "rgba(94, 115, 97, 1)";
+        color = "#4b5c3e";
       }
       return (
-        <span key={index} style={{ color }}>
-          {char}
-        </span>
+        <React.Fragment key={index}>
+          {index === currentIndex && <span className="cursor"></span>}
+          <span style={{ color }}>{char}</span>
+        </React.Fragment>
       );
     });
   }, [currentTyping, currentIndex, typedCorrectness]);
@@ -275,13 +276,13 @@ function TypingTest() {
 
         <section className="Typing_section w-full px-5 py-5 text-center">
           <div
-            className="typing border-t-0.2 border-b-0.2 border-slate-40 py-6 tracking-wide"
+            className="typing border-slate-40 py-6 tracking-widest whitespace-pre"
             tabIndex={0}
             onKeyDown={handleKeyDown}
             style={{
               cursor: "text",
-              color: "white",
-              fontSize: "1.5rem",
+              color: "rgb(156, 155, 155)",
+              fontSize: "1.8rem",
               outline: "none",
               wordSpacing: "2px",
             }}

@@ -20,10 +20,9 @@ const MetricCalculation = ({correctCounter , errorCounter , totalKeystrokes , to
         grossWPM,
         errorRate,
         netWPM,
-        correctCounter,
+        correctWordsPM,
         keyStrokeAccuracy,
     }
 }
 
 export default MetricCalculation;
-// export { accuracy, grossWPM, errorRate, netWPM, correctCounter, keyStrokeAccuracy };
