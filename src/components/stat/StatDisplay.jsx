@@ -1,52 +1,61 @@
-import React from "react";
 
+
+
+import React, { useState, useEffect } from "react";
 import { Radar } from "react-chartjs-2";
 import "chart.js/auto";
 import { useLocation } from "react-router-dom";
 
 const StatDisplay = () => {
   const location = useLocation();
+  const [message, setMessage] = useState("");
+  const [normalizedData, setNormalizedData] = useState({});
+
   const {
-    accuracy,
-    grossWPM,
-    errorRate,
-    netWPM,
-    correctWordsPM,
-    keyStrokeAccuracy,
-  } = location.state;
+    accuracy = 0,
+    grossWPM = 0,
+    errorRate = 0,
+    netWPM = 0,
+    correctWordsPM = 0,
+    keyStrokeAccuracy = 0,
+  } = location.state || {};
 
-  console.log(accuracy);
+  useEffect(() => {
+    const maxvalue = {
+      maxAccuracy: 120,
+      maxGrossWPM: 120,
+      maxErrorRate: 100,
+      maxNetWPM: 120,
+      correctWordsPM: 1000,
+      maxKeyStrokeAccuracy: 100,
+    };
 
-  const maxvalue = {
-    maxAccuracy: 120,
-    maxGrossWPM: 120,
-    maxErrorRate: 100,
-    maxNetWPM: 120,
-    correctWordsPM: 1000,
-    maxKeyStrokeAccuracy: 100,
-  };
+    const computeNormalizedValue = (value, max) => {
+      return (value / max) * 100;
+    };
 
-  const computeNormalizedValue = (value, max) => {
-    return (value / max) * 100;
-  };
+    setNormalizedData  ({
+      accuracy: computeNormalizedValue(accuracy, maxvalue.maxAccuracy),
+      grossWPM: computeNormalizedValue(grossWPM, maxvalue.maxGrossWPM),
+      errorRate: 100 - computeNormalizedValue(errorRate, maxvalue.maxErrorRate),
+      netWPM: computeNormalizedValue(netWPM, maxvalue.maxNetWPM),
+      correctCounter: computeNormalizedValue(
+        correctWordsPM,
+        maxvalue.correctWordsPM
+      ),
+      keyStrokeAccuracy: computeNormalizedValue(
+        keyStrokeAccuracy,
+        maxvalue.maxKeyStrokeAccuracy
+      ),
 
-  const normalizedData = {
-    accuracy: computeNormalizedValue(accuracy, maxvalue.maxAccuracy),
-    grossWPM: computeNormalizedValue(grossWPM, maxvalue.maxGrossWPM),
-    errorRate: 100 - computeNormalizedValue(errorRate, maxvalue.maxErrorRate),
-    netWPM: computeNormalizedValue(netWPM, maxvalue.maxNetWPM),
-    correctCounter: computeNormalizedValue(
-      correctWordsPM,
-      maxvalue.correctWordsPM
-    ),
-    keyStrokeAccuracy: computeNormalizedValue(
-      keyStrokeAccuracy,
-      maxvalue.maxKeyStrokeAccuracy
-    ),
-  };
+    });
 
-  console.log(normalizedData);
 
+
+  }, [accuracy, grossWPM, errorRate, netWPM, correctWordsPM, keyStrokeAccuracy]); 
+
+
+  
   const data = {
     labels: [
       "Accuracy",
@@ -75,6 +84,19 @@ const StatDisplay = () => {
       },
     ],
   };
+
+  useEffect(() => {
+  
+
+
+    if (normalizedData.netWPM > 55) {
+      setMessage(`<h3>Hii,</h3><br/><h4>Congratulations - You are doing great! You Have Typed <span>${Math.round(normalizedData.netWPM)}</span> Words Per Minute, With <span>${Math.round(normalizedData.accuracy)}%</span> Accuracy, excellent keep it up!</h4>`);
+    } else if (Math.round(normalizedData.netWPM) > 40) {
+      setMessage(`<h3>Hii,</h3><br/><h4>You are doing good - You Have Typed <span>${Math.round(normalizedData.netWPM)}</span> Words Per Minute, With <span>${Math.round(normalizedData.accuracy)}%</span> Accuracy, cool, keep it up!</h4>`);
+    } else {
+      setMessage(`<h3>Hii,</h3><br/><h4>Not Bad - You Have Typed <span>${Math.round(normalizedData.netWPM)}</span> Words Per Minute, With <span>${Math.round(normalizedData.accuracy)}%</span> Accuracy, keep practicing, you will get better soon.</h4>`);
+    }
+  }, [normalizedData.netWPM, normalizedData.accuracy]);
 
   const options = {
     scales: {
@@ -110,12 +132,22 @@ const StatDisplay = () => {
       }
     }
   };
-
   return (
-    <div className="display_stat relative flex justify-center w-screen h-screen bg-black">
+    // <div className="display_stat">
+    //   <Radar data={data} options={options} />
+    //   <div dangerouslySetInnerHTML={{ __html: message }} />
+    // </div>
+
+   
+    <div className="display_stat relative flex justify-center flex-col w-screen h-screen bg-black">
       <div className="display flex w-custom h-custom">
         <Radar data={data} options={options}/>
       </div>
+      <section className="display_text text-center bg-white">
+    
+        <div dangerouslySetInnerHTML={{__html:message}}></div>
+        
+      </section>
     </div>
   );
 };
