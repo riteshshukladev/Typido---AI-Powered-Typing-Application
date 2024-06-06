@@ -1,0 +1,45 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+.display_text {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  max-width: 720px;
+  width: 100%;
+
+  margin: 0 auto;
+
+  text-align: center;
+  letter-spacing: 2px;
+  word-spacing: 2px;
+
+  margin-bottom: 28px;
+}
+
+.display_text div h4 {
+  font-size: 30px;
+  font-weight: 400;
+  color: #939191;
+  /* margin-bottom: -0.5rem; */
+  text-transform: capitalize;
+}
+.display_text div span {
+  font-size: 34px;
+  font-weight: 400;
+  color: #6fb671;
+
+  text-transform: capitalize;
+}
+.btn {
+  padding: 5px 10px;
+  background-color: transparent;
+  border-radius: 5px;
+  border: 1px solid #747474;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #8686862d;
+  color: white;
+}

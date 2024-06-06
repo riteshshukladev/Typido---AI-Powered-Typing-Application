@@ -4,10 +4,11 @@
 import React, { useState, useEffect } from "react";
 import { Radar } from "react-chartjs-2";
 import "chart.js/auto";
-import { useLocation } from "react-router-dom";
-
+import { useLocation,useNavigate } from "react-router-dom";
+import "./style.css"
 const StatDisplay = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const [normalizedData, setNormalizedData] = useState({});
 
@@ -89,14 +90,14 @@ const StatDisplay = () => {
   
 
 
-    if (normalizedData.netWPM > 55) {
-      setMessage(`<h3>Hii,</h3><br/><h4>Congratulations - You are doing great! You Have Typed <span>${Math.round(normalizedData.netWPM)}</span> Words Per Minute, With <span>${Math.round(normalizedData.accuracy)}%</span> Accuracy, excellent keep it up!</h4>`);
-    } else if (Math.round(normalizedData.netWPM) > 40) {
-      setMessage(`<h3>Hii,</h3><br/><h4>You are doing good - You Have Typed <span>${Math.round(normalizedData.netWPM)}</span> Words Per Minute, With <span>${Math.round(normalizedData.accuracy)}%</span> Accuracy, cool, keep it up!</h4>`);
+    if (normalizedData.grossWPM > 55) {
+      setMessage(`<h4>Hii, and Congratulations!! - You are doing great! You Have Typed <span>${Math.round(normalizedData.grossWPM)}</span> Words in a Minute, With An outstanding accuracy of <span>${Math.round(normalizedData.accuracy)}%</span>, excellent keep it up!</h4>`);
+    } else if (Math.round(normalizedData.grossWPM) > 40) {
+      setMessage(`<h4>Hii, You are doing good - You Have Typed <span>${Math.round(normalizedData.grossWPM)}</span> Words in a Minute, With An good accuracy of <span>${Math.round(normalizedData.accuracy)}%</span>, cool, keep it up!</h4>`);
     } else {
-      setMessage(`<h3>Hii,</h3><br/><h4>Not Bad - You Have Typed <span>${Math.round(normalizedData.netWPM)}</span> Words Per Minute, With <span>${Math.round(normalizedData.accuracy)}%</span> Accuracy, keep practicing, you will get better soon.</h4>`);
+      setMessage(`<h4>Hii, Not Bad - You Have Typed <span>${Math.round(normalizedData.grossWPM)}</span> Words in a Minute, With An accuracy of <span>${Math.round(normalizedData.accuracy)}%</span> , keep practicing, you will get better soon.</h4>`);
     }
-  }, [normalizedData.netWPM, normalizedData.accuracy]);
+  }, [normalizedData.grossWPM, normalizedData.accuracy]);
 
   const options = {
     scales: {
@@ -132,22 +133,26 @@ const StatDisplay = () => {
       }
     }
   };
+
+  const handleReset = () => {
+    navigate("/generate");
+  };
+
   return (
-    // <div className="display_stat">
-    //   <Radar data={data} options={options} />
-    //   <div dangerouslySetInnerHTML={{ __html: message }} />
-    // </div>
+  
 
    
-    <div className="display_stat relative flex justify-center flex-col w-screen h-screen bg-black">
+    <div className="display_stat flex justify-center items-center flex-col w-full	h-full bg-black">
       <div className="display flex w-custom h-custom">
         <Radar data={data} options={options}/>
       </div>
-      <section className="display_text text-center bg-white">
+      <section className="display_text text-center text-white	">
     
         <div dangerouslySetInnerHTML={{__html:message}}></div>
         
       </section>
+
+      <button className="text-white btn" onClick={handleReset}>Retest</button>
     </div>
   );
 };
