@@ -8,7 +8,7 @@ import React, {
 import { useLocation } from "react-router-dom";
 import "./styleText.css";
 import MetricCalculation from "./components/calculation/MetricCalculation";
-
+import useSound from "use-sound";
 import Stat from "./components/stat";
 
 function TypingTest() {
@@ -45,6 +45,9 @@ function TypingTest() {
     totalKeystrokes: 0,
     totalCharactersTyped: 0,
   });
+
+  const [playCorrectKeySound] = useSound('../sound/mech-keyboard.mp3');
+  
 
   const splitStringIntoGroups = useCallback(
     (string, wordsPerGroup = 12) => {
@@ -142,6 +145,7 @@ function TypingTest() {
       const currentChar = currentTyping[currentIndex];
       const correct = e.key === currentChar;
 
+      playCorrectKeySound();
       if (e.key !== "Backspace") {
         if (correct) {
           matricsValues.current.correctCounter++;

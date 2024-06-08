@@ -135,7 +135,7 @@ const StatDisplay = () => {
   };
 
   const handleReset = () => {
-    navigate("/generate");
+    navigate("/");
   };
 
   return (

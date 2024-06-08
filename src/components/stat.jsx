@@ -17,7 +17,7 @@ const Stat = ({ ...props }) => {
 
   }
   const handleRouteBtn = () => { 
-    navigate('/generate/detailed-stat', { state: propsData});
+    navigate('/detailed-stat', { state: propsData});
     
   }
 
