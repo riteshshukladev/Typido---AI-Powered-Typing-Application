@@ -1,3 +1,5 @@
+
+
 #generate__parent_container {
   display: flex;
   justify-content: center;
@@ -8,6 +10,9 @@
   /* margin-top: 12rem; */
   background-color: black;
   padding-bottom: 0px;
+  position: relative;
+  overflow: hidden;
+
 }
 
 input::placeholder{
@@ -103,4 +108,44 @@ input::placeholder{
 }
 .generate_button:hover{
   background-color: #c4c4c4;
+}
+
+*{
+  transition: all 0.005s ease-out;
+}
+
+.background_effect{
+  position: absolute;
+  bottom: -15%;
+  --blur-radius: 550px;
+  left: 30%;
+  transform: translate(-50%);
+  width: 550px;
+  height: 250px;
+  filter: blur(calc(var(--blur-radius)/ 3));
+  /* background-image: linear-gradient(rgba(55,235,169,0.85),#5b37eb); */
+  background-image: linear-gradient(#41C9E2, #F7EEDD);
+  animation: rotate 50s cubic-bezier(0.8 , 0.2 ,0.2, 0.8) alternate infinite;
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+
+  animation: float 40s ease-in-out infinite;
+
+}
+
+@keyframes float{
+  0%,100%{
+  transform: translate(-50%);
+  }
+  25%{
+  transform: translate(-55%, -5px);
+  }
+
+  50%{
+  transform: translate(-50%, -10px);
+  }
+
+  75%{
+  transform: translate(-45%, -5px);
+  } 
+
 }

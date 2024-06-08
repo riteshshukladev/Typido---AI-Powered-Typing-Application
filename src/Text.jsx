@@ -46,8 +46,6 @@ function TypingTest() {
     totalCharactersTyped: 0,
   });
 
-  const [playCorrectKeySound] = useSound('../sound/mech-keyboard.mp3');
-  
 
   const splitStringIntoGroups = useCallback(
     (string, wordsPerGroup = 12) => {
@@ -145,7 +143,6 @@ function TypingTest() {
       const currentChar = currentTyping[currentIndex];
       const correct = e.key === currentChar;
 
-      playCorrectKeySound();
       if (e.key !== "Backspace") {
         if (correct) {
           matricsValues.current.correctCounter++;

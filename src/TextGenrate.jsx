@@ -117,6 +117,9 @@ const TextGenerate = () => {
           isWaiting && <p>Waiting for the response...</p>
         }
       </span>
+
+      <div className="background_effect">
+      </div>
     </div>
   );
 };
