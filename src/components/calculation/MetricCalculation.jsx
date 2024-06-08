@@ -15,6 +15,19 @@ const MetricCalculation = ({correctCounter , errorCounter , totalKeystrokes , to
 
     const keyStrokeAccuracy = (correctCounter / totalKeystrokes) * 100;
 
+    if (isNaN(accuracy) || isNaN(grossWPM) || isNaN(errorRate) || isNaN(netWPM) || isNaN(correctWordsPM) || isNaN(keyStrokeAccuracy)) {
+        return {
+            accuracy: 0,
+            grossWPM: 0,
+            errorRate: 0,
+            netWPM: 0,
+            correctWordsPM: 0,
+            keyStrokeAccuracy: 0,
+        }
+    }
+
+    
+
     return {
         accuracy,
         grossWPM,
