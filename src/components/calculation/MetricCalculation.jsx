@@ -1,6 +1,8 @@
 import React from 'react'
 
-const MetricCalculation = ({correctCounter , errorCounter , totalKeystrokes , totalCharactersTyped ,timeInMinutes }) => {
+const MetricCalculation = ({ correctCounter, errorCounter, totalKeystrokes, totalCharactersTyped, timeInMinutes }) => {
+    
+    const timeInMinutes = parseFloat(timeInMinutes);
  
 
     const accuracy = ((correctCounter / totalCharactersTyped) * 100).toFixed(2);
@@ -26,7 +28,7 @@ const MetricCalculation = ({correctCounter , errorCounter , totalKeystrokes , to
         }
     }
 
-    
+
 
     return {
         accuracy,
