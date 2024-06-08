@@ -63,7 +63,7 @@ function TypingTest() {
   useEffect(() => {
     if (output) {
       let temp = splitStringIntoGroups(output);
-      console.log(temp);
+      
       let newToBeTyped = [...toBeTyped];
       for (let i = indicators.startIndex; i < indicators.endIndex; i++) {
         newToBeTyped.push(temp[i]);
@@ -86,7 +86,7 @@ function TypingTest() {
         errorCounter: matricsValues.current.errorCounter,
         totalKeystrokes: matricsValues.current.totalKeystrokes,
         totalCharactersTyped: matricsValues.current.totalCharactersTyped,
-        timeInMinutes: `${minutes / 2}.${timer}`,
+        timeInMinutes: `${minutes}.${timer}`,
       });
       setMatrics(calculatedMetrics);
     }
@@ -174,13 +174,11 @@ function TypingTest() {
           matricsValues.current.totalKeystrokes++;
           matricsValues.current.totalCharactersTyped--;
 
-          console.log(matricsValues.current.totalCharactersTyped);
-          console.log(matricsValues.current.totalKeystrokes);
+         
         }
         return;
       }
 
-      console.log(matricsValues);
 
       if (
         toBeTyped[0] === undefined &&
@@ -214,7 +212,7 @@ function TypingTest() {
         color = typedCorrectness[index]
           ? "rgba(125, 209, 138, 1)"
           : "rgba(216, 89, 89, 1)";
-        console.log(typedCorrectness[index]);
+
       } else if (index === currentIndex) {
         color = "#4b5c3e";
       }
@@ -238,9 +236,7 @@ function TypingTest() {
     return filteredArray;
   };
 
-  if (typingCompleted) {
-    console.log(matrics);
-  }
+
 
   return (
     <div
@@ -309,7 +305,7 @@ function TypingTest() {
 
       <div className="timer">
         <span>
-          {minutes / 2}:{timer}
+          {minutes}:{timer}
         </span>
       </div>
 
