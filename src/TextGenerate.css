@@ -118,7 +118,7 @@ input::placeholder{
   position: absolute;
   bottom: -15%;
   --blur-radius: 550px;
-  left: 30%;
+  left: 50%;
   transform: translate(-50%);
   width: 550px;
   height: 250px;
