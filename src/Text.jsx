@@ -8,7 +8,6 @@ import React, {
 import { useLocation } from "react-router-dom";
 import "./styleText.css";
 import MetricCalculation from "./components/calculation/MetricCalculation";
-import useSound from "use-sound";
 import Stat from "./components/stat";
 
 function TypingTest() {

@@ -45,38 +45,6 @@ const TextGenerate = () => {
     }
   }
 
-  // return (
-  //   <div>
-  //     <div>
-  //       <form>
-  //         <span>
-  //           <input
-  //             type="text"
-  //             placeholder="Enter your text here"
-  //             onChange={handleInputBtnClick}
-  //           />
-  //           <input type="reset" value="Clear" />
-  //         </span>
-  //         <button type="button" onClick={handleBtnClick}>
-  //           Click me
-  //         </button>
-  //       </form>
-  //       <div style={{ marginTop: 16 }}>
-  //         {isWaiting ? (
-  //           <p>Waiting For the Response...</p>
-  //         ) : (
-  //           <span style={{ display: "block" }}>{outputText}</span>
-  //         )}
-  //         <button onClick={handleBtnClick}>Resend</button>
-  //         {/* Pass the outputText instead of the DOM element */}
-  //         <Link to="text" state={{ output: outputText }}>
-  //           <button>Proceed</button>
-  //         </Link>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
-
   const handleClear = () => {
     setInput("");
   };
@@ -84,8 +52,7 @@ const TextGenerate = () => {
   return (
     <div id="generate__parent_container">
       <section className="header">
-        {/* <h1 className="header_text">{originalText}</h1> */}
-        {/* <img src={`${process.env.PUBLIC_URL}../public/logo.svg`} alt="" /> */}
+      
         <MainLogo className="logo_svg"/>
         <h6 className="small_text">{ smallText}</h6>
       </section>
