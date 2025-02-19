@@ -1,16 +1,23 @@
-
-
-
 import React, { useState, useEffect } from "react";
-import { Radar } from "react-chartjs-2";
-import "chart.js/auto";
-import { useLocation,useNavigate } from "react-router-dom";
-import "./style.css"
+import { useLocation, useNavigate } from "react-router-dom";
+import "./style.css";
+
+// Import shadcn/Recharts chart components
+import { LabelList, RadialBar, RadialBarChart } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+
 const StatDisplay = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
-  const [normalizedData, setNormalizedData] = useState({});
+  const [normalizedData, setNormalizedData] = useState({
+    accuracy: 0,
+    grossWPM: 0,
+    errorRate: 0,
+    netWPM: 0,
+    correctCounter: 0,
+    keyStrokeAccuracy: 0,
+  });
 
   const {
     accuracy = 0,
@@ -31,128 +38,104 @@ const StatDisplay = () => {
       maxKeyStrokeAccuracy: 100,
     };
 
-    const computeNormalizedValue = (value, max) => {
-      return (value / max) * 100;
-    };
+    const computeNormalizedValue = (value, max) => (value / max) * 100;
 
-    setNormalizedData  ({
+    setNormalizedData({
       accuracy: computeNormalizedValue(accuracy, maxvalue.maxAccuracy),
       grossWPM: computeNormalizedValue(grossWPM, maxvalue.maxGrossWPM),
       errorRate: 100 - computeNormalizedValue(errorRate, maxvalue.maxErrorRate),
       netWPM: computeNormalizedValue(netWPM, maxvalue.maxNetWPM),
-      correctCounter: computeNormalizedValue(
-        correctWordsPM,
-        maxvalue.correctWordsPM
-      ),
-      keyStrokeAccuracy: computeNormalizedValue(
-        keyStrokeAccuracy,
-        maxvalue.maxKeyStrokeAccuracy
-      ),
-
+      correctCounter: computeNormalizedValue(correctWordsPM, maxvalue.correctWordsPM),
+      keyStrokeAccuracy: computeNormalizedValue(keyStrokeAccuracy, maxvalue.maxKeyStrokeAccuracy),
     });
-
-
-
-  }, [accuracy, grossWPM, errorRate, netWPM, correctWordsPM, keyStrokeAccuracy]); 
-
-
-  
-  const data = {
-    labels: [
-      "Accuracy",
-      "Gross WPM",
-      "Error Rate",
-      "Net WPM",
-      "Correct WPM",
-      "Key Stroke Accuracy",
-    ],
-    datasets: [
-      {
-        label: "Metrics",
-        data: [
-          normalizedData.accuracy,
-          normalizedData.grossWPM,
-          normalizedData.errorRate,
-          normalizedData.netWPM,
-          normalizedData.correctCounter,
-          normalizedData.keyStrokeAccuracy,
-        ],
-        backgroundColor: "rgba(132, 104, 104, 0.2)",
-        borderColor: "#c96c6cce",
-        borderWidth: 1.5,
-        pointBackgroundColor: "#b1b1b16f",
-        pointBorderColor: "#ffffffad",
-      },
-    ],
-  };
+  }, [accuracy, grossWPM, errorRate, netWPM, correctWordsPM, keyStrokeAccuracy]);
 
   useEffect(() => {
-  
-
-
     if (normalizedData.grossWPM > 55) {
-      setMessage(`<h4>Hii, and Congratulations!! - You are doing great! You Have Typed <span>${Math.round(normalizedData.grossWPM)}</span> Words in a Minute, With An outstanding accuracy of <span>${Math.round(normalizedData.accuracy)}%</span>, excellent keep it up!</h4>`);
+      setMessage(
+        `<h4>Hii, and Congratulations!! - You are doing great! You Have Typed <span>${Math.round(
+          normalizedData.grossWPM
+        )}</span> Words in a Minute, With An outstanding accuracy of <span>${Math.round(
+          normalizedData.accuracy
+        )}%</span>, excellent keep it up!</h4>`
+      );
     } else if (Math.round(normalizedData.grossWPM) > 40) {
-      setMessage(`<h4>Hii, You are doing good - You Have Typed <span>${Math.round(normalizedData.grossWPM)}</span> Words in a Minute, With An good accuracy of <span>${Math.round(normalizedData.accuracy)}%</span>, cool, keep it up!</h4>`);
+      setMessage(
+        `<h4>Hii, You are doing good - You Have Typed <span>${Math.round(
+          normalizedData.grossWPM
+        )}</span> Words in a Minute, With An good accuracy of <span>${Math.round(
+          normalizedData.accuracy
+        )}%</span>, cool, keep it up!</h4>`
+      );
     } else {
-      setMessage(`<h4>Hii, Not Bad - You Have Typed <span>${Math.round(normalizedData.grossWPM)}</span> Words in a Minute, With An accuracy of <span>${Math.round(normalizedData.accuracy)}%</span> , keep practicing, you will get better soon.</h4>`);
+      setMessage(
+        `<h4>Hii, Not Bad - You Have Typed <span>${Math.round(
+          normalizedData.grossWPM
+        )}</span> Words in a Minute, With An accuracy of <span>${Math.round(
+          normalizedData.accuracy
+        )}%</span> , keep practicing, you will get better soon.</h4>`
+      );
     }
   }, [normalizedData.grossWPM, normalizedData.accuracy]);
-
-  const options = {
-    scales: {
-      r: { // Make sure to use 'r' for radial scales in Chart.js version 3 and later
-        angleLines: {
-          display: true,
-          color: '#796c6c' // Custom color for radial lines (webs)
-        },
-        grid: {
-          color: '#7e7e7e8f' // Optional: change the circular grid lines color
-        },
-        pointLabels: {
-          color: '#fefefe', // Changes the color of the metrics at the corners
-          font: {
-            size: 14 ,// Optionally adjust the font size
-            weight: 'light' // Optionally adjust the font weight
-          }
-        }
-      }
-    },
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      tooltip: {
-        mode: 'index',
-        intersect: false,
-      },
-    },
-    elements: {
-      line: {
-        borderWidth: 3
-      }
-    }
-  };
 
   const handleReset = () => {
     navigate("/");
   };
 
-  return (
-  
+  // Prepare chartData using the normalized metrics.
+  const chartData = [
+    { metric: "Accuracy", visitors: normalizedData.accuracy, fill: "hsl(var(--chart-1))" },
+    { metric: "Gross WPM", visitors: normalizedData.grossWPM, fill: "hsl(var(--chart-2))" },
+    { metric: "Error Rate", visitors: normalizedData.errorRate, fill: "hsl(var(--chart-3))" },
+    { metric: "Net WPM", visitors: normalizedData.netWPM, fill: "hsl(var(--chart-4))" },
+    { metric: "Correct WPM", visitors: normalizedData.correctCounter, fill: "hsl(var(--chart-5))" },
+    { metric: "Key Stroke Accuracy", visitors: normalizedData.keyStrokeAccuracy, fill: "hsl(200,80%,50%)" },
+  ];
 
-   
-    <div className="display_stat flex justify-center items-center flex-col w-full	h-full bg-black">
-      <div className="display flex w-custom h-custom">
-        <Radar data={data} options={options}/>
+  // Local chart configuration (if needed by ChartContainer)
+  const chartConfig = {
+    visitors: {
+      label: "Score",
+    },
+  };
+
+  return (
+    <div className="display_stat flex justify-center items-center flex-col w-full h-screen bg-black">
+      {/* Chart container remains unchanged */}
+      <div className="display flex w-full h-72">
+        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[250px]">
+          <RadialBarChart
+            data={chartData}
+            startAngle={-90}
+            endAngle={380}
+            innerRadius={20}  // Reduced innerRadius for a thicker bar
+            outerRadius={120} // Increased outerRadius for a thicker bar
+          >
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel nameKey="metric" />}
+            />
+            <RadialBar dataKey="visitors" background>
+              <LabelList
+                position="insideStart"
+                dataKey="metric"
+                className="fill-white capitalize mix-blend-luminosity"
+                fontSize={11}
+              />
+            </RadialBar>
+          </RadialBarChart>
+        </ChartContainer>
       </div>
-      <section className="display_text text-center text-white	">
-    
-        <div dangerouslySetInnerHTML={{__html:message}}></div>
-        
+
+      {/* Message display remains unchanged */}
+      <section className="text-center text-white">
+        <div dangerouslySetInnerHTML={{ __html: message }} className="text-2xl w-[60%] mx-auto font-medium"></div>
       </section>
 
-      <button className="text-white btn" onClick={handleReset}>Retest</button>
+      {/* Reset button remains unchanged */}
+      <button className="text-white btn mt-4" onClick={handleReset}>
+        Retest
+      </button>
     </div>
   );
 };

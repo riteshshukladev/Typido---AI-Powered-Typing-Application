@@ -1,43 +1,39 @@
-import React from 'react'
+import React from "react";
 
-const MetricCalculation = ({ correctCounter, errorCounter, totalKeystrokes, totalCharactersTyped, timeInMinutes }) => {
-    
-    timeInMinutes = parseFloat(timeInMinutes);
- 
+const MetricCalculation = ({
+  correctCounter,
+  errorCounter,
+  totalKeystrokes,
+  totalCharactersTyped,
+  timeInMinutes,
+}) => {
+  // Ensure timeInMinutes is not zero and is a valid number
+  timeInMinutes = Math.max(parseFloat(timeInMinutes) || 0.01, 0.01);
 
-    const accuracy = ((correctCounter / totalCharactersTyped) * 100).toFixed(2);
+  // Guard against division by zero
+  const safeDiv = (a, b) => (b === 0 ? 0 : a / b);
 
-    const grossWPM = ((totalKeystrokes / 5) / timeInMinutes).toFixed(2);
+  // Ensure all inputs are valid numbers
+  correctCounter = parseInt(correctCounter) || 0;
+  errorCounter = parseInt(errorCounter) || 0;
+  totalKeystrokes = parseInt(totalKeystrokes) || 0;
+  totalCharactersTyped = parseInt(totalCharactersTyped) || 0;
 
-    const errorRate = ((errorCounter / totalCharactersTyped) * 100).toFixed(2);
+  const accuracy = safeDiv(correctCounter, totalCharactersTyped) * 100;
+  const grossWPM = safeDiv(totalKeystrokes / 5, timeInMinutes);
+  const errorRate = safeDiv(errorCounter, totalCharactersTyped) * 100;
+  const netWPM = Math.max(grossWPM - errorRate, 0); // Ensure netWPM is not negative
+  const correctWordsPM = safeDiv(correctCounter / 5, timeInMinutes);
+  const keyStrokeAccuracy = safeDiv(correctCounter, totalKeystrokes) * 100;
 
-    const netWPM = (grossWPM - errorRate).toFixed(2);
-
-    const correctWordsPM = (correctCounter / 5) / timeInMinutes;
-
-    const keyStrokeAccuracy = (correctCounter / totalKeystrokes) * 100;
-
-    if (isNaN(accuracy) || isNaN(grossWPM) || isNaN(errorRate) || isNaN(netWPM) || isNaN(correctWordsPM) || isNaN(keyStrokeAccuracy)) {
-        return {
-            accuracy: 0,
-            grossWPM: 0,
-            errorRate: 0,
-            netWPM: 0,
-            correctWordsPM: 0,
-            keyStrokeAccuracy: 0,
-        }
-    }
-
-
-
-    return {
-        accuracy,
-        grossWPM,
-        errorRate,
-        netWPM,
-        correctWordsPM,
-        keyStrokeAccuracy,
-    }
-}
+  return {
+    accuracy: accuracy.toFixed(2),
+    grossWPM: grossWPM.toFixed(2),
+    errorRate: errorRate.toFixed(2),
+    netWPM: netWPM.toFixed(2),
+    correctWordsPM: correctWordsPM.toFixed(2),
+    keyStrokeAccuracy: keyStrokeAccuracy.toFixed(2),
+  };
+};
 
 export default MetricCalculation;

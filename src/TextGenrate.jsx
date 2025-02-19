@@ -31,7 +31,7 @@ const TextGenerate = () => {
         messages: [
           {
             role: "user",
-            content: `you're part of a typing application , the text you'll genererate on the topic of ${input} should be easy ,without any special characters ,any sorts of mathematical eqauation,  and the one and only primary language should be english only, generate the text accordingly in the length of 60 words - Only output the content that needs to be typed nothing more - Don't say that you are AI of anything. or don't mention anything it's just like your providing some info`,
+            content: `you're part of a typing application , the text you'll genererate on the topic of ${input} should be easy ,without any special characters ,any sorts of mathematical eqauation,  and the one and only primary language should be english only, generate the text accordingly in the length of 30 words - Only output the content that needs to be typed nothing more - Don't say that you are AI of anything. or don't mention anything it's just like your providing some info`,
           },
         ],
       });
