@@ -54,7 +54,8 @@ const TextGenerate = () => {
       <section className="header">
       
         <MainLogo className="logo_svg"/>
-        <h6 className="small_text">{ smallText}</h6>
+        <h6 className="small_text">{smallText}</h6>
+        <h6 className="note"><span>Note:-</span>This is not made for considering mobile design in mind</h6>
       </section>
       <div className="input-and-submit">
         <div className="input__clear">
